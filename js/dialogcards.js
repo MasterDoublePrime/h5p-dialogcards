@@ -117,7 +117,7 @@ H5P.Dialogcards = (function ($, Audio, JoubelUI) {
       'class': 'h5p-dialogcards-progress'
     }).appendTo($footer);
 
-    return $footer
+    return $footer;
   };
 
   /**
@@ -213,9 +213,7 @@ H5P.Dialogcards = (function ($, Audio, JoubelUI) {
       }
     };
 
-
     for (var i = 0; i < cards.length; i++) {
-
       // Load cards progressively
       if (i >= initLoad) {
         break;
@@ -273,7 +271,6 @@ H5P.Dialogcards = (function ($, Audio, JoubelUI) {
     var $cardContent = $('<div>', {
       'class': 'h5p-dialogcards-card-content'
     });
-
 
     self.createCardImage(card, setCardSizeCallback)
       .appendTo($cardContent);
@@ -378,7 +375,6 @@ H5P.Dialogcards = (function ($, Audio, JoubelUI) {
       'class': 'h5p-dialogcards-audio-wrapper'
     });
     if (card.audio !== undefined) {
-
       var audioDefaults = {
         files: card.audio
       };
@@ -481,37 +477,35 @@ H5P.Dialogcards = (function ($, Audio, JoubelUI) {
     // Check if card has been turned before
     var turned = $c.hasClass('h5p-dialogcards-turned');
 
-	//If the checkbox to use the same front image on back also is checked, show the front image only regardless of whether a back image is uploaded or not.
-	//P.S. Adding this snippet after changeText() caused image sizing problems
-	if(self.params.dialogs[$card.index()]['use_same'])
-		self.changeImage($c, self.params.dialogs[$card.index()]['image']);
-	else
-		self.changeImage($c, self.params.dialogs[$card.index()][turned ? 'image' : 'back_image']);
-	
-    // Update HTML class for card
-    $c.toggleClass('h5p-dialogcards-turned', !turned);
+		//Show the front image only if a back image is not uploaded.
+		//P.S. Adding this snippet after changeText() caused image sizing problems
+		if (self.params.dialogs[$card.index()].backImage.length) {
+			self.changeImage($c, self.params.dialogs[$card.index()][turned ? 'image' : 'backImage']);
+		}
+		// Update HTML class for card
+		$c.toggleClass('h5p-dialogcards-turned', !turned);
 
-    setTimeout(function () {
-      $ch.removeClass('h5p-dialogcards-collapse');
-      self.changeText($c, self.params.dialogs[$card.index()][turned ? 'text' : 'answer']);
-      if (turned) {
-        $ch.find('.h5p-audio-inner').removeClass('hide');
-      }
-      else {
-        self.removeAudio($ch);
-      }
+		setTimeout(function () {
+			$ch.removeClass('h5p-dialogcards-collapse');
+			self.changeText($c, self.params.dialogs[$card.index()][turned ? 'text' : 'answer']);
+			if (turned) {
+				$ch.find('.h5p-audio-inner').removeClass('hide');
+			}
+			else {
+				self.removeAudio($ch);
+			}
 
-      // Add backside tip
-      // Had to wait a little, if not Chrome will displace tip icon
-      setTimeout(function () {
-        self.addTipToCard($c, turned ? 'front' : 'back');
-        if (!self.$current.next('.h5p-dialogcards-cardwrap').length) {
-          self.$retry.removeClass('h5p-dialogcards-disabled');
-          self.truncateRetryButton();
-          self.resizeOverflowingText();
-        }
-      }, 200);
-    }, 200);
+			// Add backside tip
+			// Had to wait a little, if not Chrome will displace tip icon
+			setTimeout(function () {
+				self.addTipToCard($c, turned ? 'front' : 'back');
+				if (!self.$current.next('.h5p-dialogcards-cardwrap').length) {
+					self.$retry.removeClass('h5p-dialogcards-disabled');
+					self.truncateRetryButton();
+					self.resizeOverflowingText();
+				}
+			}, 200);
+		}, 200);
   };
 
   /**
@@ -536,14 +530,15 @@ H5P.Dialogcards = (function ($, Audio, JoubelUI) {
   C.prototype.changeImage = function ($card, imgSrc) {
     var $cardImage = $card.find('img.h5p-dialogcards-image');
 	
-	if(imgSrc != undefined)
-	{
-		$cardImage.parent().show(); //Show the <div> around <img> which could be hidden while turning the card in the absence of the back image
-		$cardImage.attr('src',H5P.getPath(imgSrc.path,this.id));
-	}
-	else
-		$cardImage.parent().hide(); //If image is not defined, hide <div> around <img> so that it does not occupy the space..
-  };
+		if(imgSrc != undefined)
+		{
+			$cardImage.parent().show(); //Show the <div> around <img> which could be hidden while turning the card in the absence of the back image
+			$cardImage.attr('src',H5P.getPath(imgSrc.path,this.id));
+		}
+		else {
+			$cardImage.parent().hide(); //If image is not defined, hide <div> around <img> so that it does not occupy the space..
+		}
+	};
 
   /**
    * Stop audio of card with cardindex
