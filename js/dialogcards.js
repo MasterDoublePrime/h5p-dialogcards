@@ -516,6 +516,7 @@ H5P.Dialogcards = (function ($, Audio, JoubelUI) {
           self.truncateRetryButton();
           self.resizeOverflowingText();
         }
+        self.resize();
       }, 200);
     }, 200);
   };
